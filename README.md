@@ -4,7 +4,7 @@
 in JAX. On four H100s it reaches BlinkMimic's target in 0.91 minutes, where BlinkMimic needs 3.19 on one; on a single
 H100 it is 1.3× faster. Same task, same hyperparameters, same evaluation.
 
-Paper: [XMimic: Learning Whole-Body Motion Tracking in Under a Minute](https://github.com/nico-bohlinger/papers/blob/main/2026_xmimic.pdf)
+Paper: [XMimic: Learning Whole-Body Motion Tracking in Under a Minute](https://nico-bohlinger.github.io/papers/2026_xmimic.pdf)
 (Nico Bohlinger, Jan Peters, 2026). Please [cite it](#citation) if you use XMimic.
 
 <picture>
@@ -268,7 +268,7 @@ If you use XMimic in your research, please cite:
   title  = {XMimic: Learning Whole-Body Motion Tracking in Under a Minute},
   author = {Bohlinger, Nico and Peters, Jan},
   year   = {2026},
-  url    = {https://github.com/nico-bohlinger/papers/blob/main/2026_xmimic.pdf}
+  url    = {https://nico-bohlinger.github.io/papers/2026_xmimic.pdf}
 }
 ```
 
