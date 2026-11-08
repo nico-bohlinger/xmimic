@@ -4,8 +4,10 @@
 in JAX. On four H100s it reaches BlinkMimic's target in 0.91 minutes, where BlinkMimic needs 3.19 on one; on a single
 H100 it is 1.3× faster. Same task, same hyperparameters, same evaluation.
 
-Paper: [XMimic: Learning Whole-Body Motion Tracking in Under a Minute](https://nico-bohlinger.github.io/papers/2026_xmimic.pdf)
-(Nico Bohlinger, Jan Peters, 2026). Please [cite it](#citation) if you use XMimic.
+Paper: [Learning Humanoid Motion Tracking and Locomotion in Minutes Through Imagination](https://nico-bohlinger.github.io/papers/2026_xmimic_xsoma.pdf)
+(Nico Bohlinger, Jan Peters, 2026), which presents XMimic together with [XSoma](https://github.com/nico-bohlinger/xsoma), the
+same recipe for velocity tracking on rough terrain. Please [cite it](#citation) if you use XMimic. The first version
+covered XMimic alone: [XMimic: Learning Whole-Body Motion Tracking in Under a Minute](https://nico-bohlinger.github.io/papers/2026_xmimic.pdf).
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="figures/time_to_target_dark.png">
@@ -264,11 +266,11 @@ Licenses and notices of the code XMimic derives from: [THIRD_PARTY_NOTICES.md](T
 If you use XMimic in your research, please cite:
 
 ```bibtex
-@misc{bohlinger2026xmimic,
-  title  = {XMimic: Learning Whole-Body Motion Tracking in Under a Minute},
+@misc{bohlinger2026imagination,
+  title  = {Learning Humanoid Motion Tracking and Locomotion in Minutes Through Imagination},
   author = {Bohlinger, Nico and Peters, Jan},
   year   = {2026},
-  url    = {https://nico-bohlinger.github.io/papers/2026_xmimic.pdf}
+  url    = {https://nico-bohlinger.github.io/papers/2026_xmimic_xsoma.pdf}
 }
 ```
 
