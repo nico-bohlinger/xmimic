@@ -163,6 +163,8 @@ of a 25 ms iteration. More speed needs faster physics or collection spread over 
 ## How to run
 
 Linux with NVIDIA GPUs and CUDA 12, Python 3.11. The published numbers are from H100s.
+Warp's wheel on PyPI needs an NVIDIA driver of version 580 or newer; with an older driver, install Warp's CUDA 12 build
+(`warp_lang-1.19.0+cu12`) from [its releases](https://github.com/NVIDIA/warp/releases) instead.
 
 ```bash
 pip install -r requirements.txt
