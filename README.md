@@ -4,9 +4,9 @@
 in JAX. On four H100s it reaches BlinkMimic's target in 0.91 minutes, where BlinkMimic needs 3.19 on one; on a single
 H100 it is 1.3× faster. Same task, same hyperparameters, same evaluation.
 
-Paper: [Learning Humanoid Motion Tracking and Locomotion in Minutes Through Imagination](https://nico-bohlinger.github.io/papers/2026_xmimic_xsoma.pdf)
+Paper: [XMimic and XSoma: Learning Humanoid Motion Tracking and Locomotion in Under a Minute](https://nico-bohlinger.github.io/papers/2026_xmimic_xsoma.pdf)
 (Nico Bohlinger, Jan Peters, 2026), which presents XMimic together with [XSoma](https://github.com/nico-bohlinger/xsoma), the
-same recipe for velocity tracking on rough terrain. Please [cite it](#citation) if you use XMimic. The first version
+same recipe for locomotion on rough terrain. Please [cite it](#citation) if you use XMimic. The first version
 covered XMimic alone: [XMimic: Learning Whole-Body Motion Tracking in Under a Minute](https://nico-bohlinger.github.io/papers/2026_xmimic.pdf).
 
 <picture>
@@ -269,7 +269,7 @@ If you use XMimic in your research, please cite:
 
 ```bibtex
 @misc{bohlinger2026imagination,
-  title  = {Learning Humanoid Motion Tracking and Locomotion in Minutes Through Imagination},
+  title  = {XMimic and XSoma: Learning Humanoid Motion Tracking and Locomotion in Under a Minute},
   author = {Bohlinger, Nico and Peters, Jan},
   year   = {2026},
   url    = {https://nico-bohlinger.github.io/papers/2026_xmimic_xsoma.pdf}
