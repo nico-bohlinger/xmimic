@@ -3,9 +3,9 @@
     python tools/rollout_cpu.py <ckpt>.npz --out rollout.npz      # defaults: dance1_subject2 from 60 s, 12 s
     python tools/render_gif.py rollout.npz                        # seconds 1-11 of it -> figures/xmimic.gif
 
-figures/xmimic.gif was made this way from the 4-GPU run's checkpoint at iteration 2000 (seed 0). The numbers on the GIF
-come from results/ (tools/make_figures.py), not from arguments. Rendering needs OpenGL (MUJOCO_GL=glfw by default; egl on
-a headless machine).
+figures/xmimic.gif was made this way from the checkpoint at iteration 2000 (54 s of training) of the first release's 4-GPU
+run with seed 0. The numbers on the GIF come from results/ (tools/make_figures.py), not from arguments. Rendering needs
+OpenGL (MUJOCO_GL=glfw by default; egl on a headless machine).
 """
 
 from __future__ import annotations

@@ -7,13 +7,13 @@ blinkmimic,BlinkMimic,1,4,blinkmimic/seed4.csv
 instanttrack,InstantTrack v1.3,1,0,instanttrack/seed0.csv
 instanttrack,InstantTrack v1.3,1,1,instanttrack/seed1.csv
 xmimic_1gpu,"XMimic, 1 GPU",1,0,xmimic_1gpu/seed0.csv
-xmimic_1gpu,"XMimic, 1 GPU",1,0,xmimic_1gpu/seed0-2.csv
 xmimic_1gpu,"XMimic, 1 GPU",1,1,xmimic_1gpu/seed1.csv
 xmimic_1gpu,"XMimic, 1 GPU",1,2,xmimic_1gpu/seed2.csv
 xmimic_1gpu,"XMimic, 1 GPU",1,3,xmimic_1gpu/seed3.csv
 xmimic_1gpu,"XMimic, 1 GPU",1,4,xmimic_1gpu/seed4.csv
 xmimic_1gpu,"XMimic, 1 GPU",1,5,xmimic_1gpu/seed5.csv
 xmimic_1gpu,"XMimic, 1 GPU",1,6,xmimic_1gpu/seed6.csv
+xmimic_1gpu,"XMimic, 1 GPU",1,7,xmimic_1gpu/seed7.csv
 xmimic_fp1,"XMimic FP1 (1 GPU, prober process)",1,0,xmimic_fp1/seed0.csv
 xmimic_fp1,"XMimic FP1 (1 GPU, prober process)",1,3,xmimic_fp1/seed3.csv
 xmimic_fp1,"XMimic FP1 (1 GPU, prober process)",1,4,xmimic_fp1/seed4.csv
@@ -24,10 +24,14 @@ xmimic_fp,XMimic FP (2 GPUs),2,2,xmimic_fp/seed2.csv
 xmimic_fp,XMimic FP (2 GPUs),2,3,xmimic_fp/seed3.csv
 xmimic_al_mps,XMimic AL + MPS prober (2 GPUs),2,0,xmimic_al_mps/seed0.csv
 xmimic_al_mps,XMimic AL + MPS prober (2 GPUs),2,1,xmimic_al_mps/seed1.csv
+xmimic_al_mps,XMimic AL + MPS prober (2 GPUs),2,2,xmimic_al_mps/seed2.csv
+xmimic_al_mps,XMimic AL + MPS prober (2 GPUs),2,3,xmimic_al_mps/seed3.csv
 xmimic_alp,XMimic ALP (3 GPUs),3,0,xmimic_alp/seed0.csv
 xmimic_alp,XMimic ALP (3 GPUs),3,1,xmimic_alp/seed1.csv
 xmimic_awl_mps,XMimic AWL + MPS prober (3 GPUs),3,0,xmimic_awl_mps/seed0.csv
 xmimic_awl_mps,XMimic AWL + MPS prober (3 GPUs),3,1,xmimic_awl_mps/seed1.csv
+xmimic_awl_mps,XMimic AWL + MPS prober (3 GPUs),3,2,xmimic_awl_mps/seed2.csv
+xmimic_awl_mps,XMimic AWL + MPS prober (3 GPUs),3,3,xmimic_awl_mps/seed3.csv
 xmimic_awlp,XMimic AWLP (4 GPUs),4,0,xmimic_awlp/seed0.csv
 xmimic_awlp,XMimic AWLP (4 GPUs),4,1,xmimic_awlp/seed1.csv
 xmimic_awlp,XMimic AWLP (4 GPUs),4,2,xmimic_awlp/seed2.csv

@@ -1,7 +1,7 @@
 # XMimic
 
-**Whole-body motion tracking for the Unitree G1, trained 3.5× faster.** XMimic is BlinkMimic's world-model trainer rebuilt
-in JAX. On four H100s it reaches BlinkMimic's target in 0.91 minutes, where BlinkMimic needs 3.19 on one; on a single
+**Whole-body motion tracking for the Unitree G1, trained 3.7× faster.** XMimic is BlinkMimic's world-model trainer rebuilt
+in JAX. On four H100s it reaches BlinkMimic's target in 0.86 minutes, where BlinkMimic needs 3.19 on one; on a single
 H100 it is 1.3× faster. Same task, same hyperparameters, same evaluation.
 
 Paper: [XMimic and XSoma: Learning Humanoid Motion Tracking and Locomotion in Under a Minute](https://nico-bohlinger.github.io/papers/2026_xmimic_xsoma.pdf)
@@ -11,7 +11,7 @@ covered XMimic alone: [XMimic: Learning Whole-Body Motion Tracking in Under a Mi
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="figures/time_to_target_dark.png">
-  <img alt="Time to target on H100: BlinkMimic 3.19 min, InstantTrack v1.3 3.26 min, XMimic on 1 GPU 2.48 min, XMimic on 4 GPUs 0.91 min" src="figures/time_to_target.png">
+  <img alt="Time to target on H100: BlinkMimic 3.19 min, InstantTrack v1.3 3.31 min, XMimic on 1, 2, 3 and 4 GPUs 2.47, 1.39, 1.09 and 0.86 min" src="figures/time_to_target.png">
 </picture>
 
 ## What XMimic is
@@ -27,30 +27,33 @@ is the machinery:
 - whole training iterations compile into single XLA programs, so the GPU never waits for Python;
 - the iteration can be split across 2 to 4 GPUs that work at the same time.
 
-<p align="center"><img src="figures/xmimic.gif" width="720" alt="XMimic: 3.5x faster training to BlinkMimic's target, with the G1 dancing"></p>
-<p align="center"><sub>The G1 driven by an XMimic policy after 54 s of training on 4 H100s (the run's target checkpoint),
-replayed in MuJoCo on a CPU.</sub></p>
+<p align="center"><img src="figures/xmimic.gif" width="720" alt="XMimic: 3.7x faster training to BlinkMimic's target, with the G1 dancing"></p>
+<p align="center"><sub>The G1 driven by an XMimic policy after 54 s of training on 4 H100s (the target checkpoint of a 4-GPU
+run of the first release), replayed in MuJoCo on a CPU.</sub></p>
 
 ## Results
 
-Time to the same target on H100 NVL GPUs. Every run trains 3500 iterations; every 100th checkpoint is evaluated on all
-40 clips with 4 replicas each.
+Time to the same target on H100 NVL GPUs. Every run trains for at least 6 minutes; every 100th checkpoint is evaluated on
+all 40 clips with 4 replicas each.
 
 | method | GPUs | runs | it/s | first ≥ 0.82 (min) | held ×3 (min) | speedup | GPU-min to target |
 |---|---|---|---|---|---|---|---|
 | BlinkMimic | 1 | 5 | 9.1 | 2.25 (1.94–2.51) | 3.19 (2.70–3.91) | 1.00× | 3.2 |
-| InstantTrack v1.3 | 1 | 2 | 10.3 | 2.07 (1.99–2.14) | 3.26 (2.90–3.61) | 0.98× | 3.3 |
-| XMimic · 1 GPU | 1 | 8 | 12.2 | 1.68 (1.39–1.97) | 2.48 (2.11–2.86) | 1.29× | 2.5 |
-| XMimic · 4 GPUs | 4 | 4 | 38.0 | 0.67 (0.60–0.69) | **0.91 (0.90–0.94)** | **3.50×** | 3.6 |
+| InstantTrack v1.3 | 1 | 2 | 10.2 | 1.90 (1.81–1.99) | 3.31 (2.34–4.29) | 0.96× | 3.3 |
+| XMimic · 1 GPU | 1 | 8 | 12.0 | 1.71 (1.54–1.98) | 2.47 (1.98–3.42) | 1.29× | 2.5 |
+| XMimic · 2 GPUs | 2 | 4 | 25.2 | 0.93 (0.84–1.03) | 1.39 (1.16–1.81) | 2.29× | 2.8 |
+| XMimic · 3 GPUs | 3 | 4 | 36.4 | 0.71 (0.67–0.72) | 1.09 (0.95–1.41) | 2.91× | 3.3 |
+| XMimic · 4 GPUs | 4 | 4 | 38.8 | 0.70 (0.69–0.73) | **0.86 (0.77–0.95)** | **3.70×** | 3.4 |
 
 Times are means over runs (range in brackets), in minutes of training with compilation excluded.
 
 - **The target** is BlinkMimic's: normalized evaluation return ≥ 0.82 with none of the 40 clips failing, held for three
   consecutive checkpoints ("held ×3"). "First ≥ 0.82" is the first checkpoint above 0.82, with failures allowed.
 - **On one GPU** XMimic is 1.3× faster than BlinkMimic and InstantTrack, so it also needs the fewest GPU-minutes.
-- **On four GPUs** it is 3.5× faster in wall-clock time. It uses a little more GPU time in total than BlinkMimic (3.6 vs
+- **On four GPUs** it is 3.7× faster in wall-clock time. It uses a little more GPU time in total than BlinkMimic (3.4 vs
   3.2 GPU-minutes): the speedup buys time, not efficiency.
-- **Same final quality.** All methods end at the same return (0.86 after 3500 iterations); XMimic gets there sooner.
+- **Same final quality.** All methods end at about the same return (0.86 to 0.87 after 6 minutes); XMimic gets there
+  sooner.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="figures/learning_curves_dark.png">
@@ -63,7 +66,9 @@ Times are means over runs (range in brackets), in minutes of training with compi
 <br>
 
 `--layout` chooses how an iteration is spread over GPUs (see [How it gets fast](#how-it-gets-fast)). The 4-GPU layout
-(AWLP) is the headline above; the plain 1-GPU trainer is the like-for-like comparison.
+(AWLP) is the headline above; the plain 1-GPU trainer is the like-for-like comparison. The runs of FP1, FP and ALP train
+3500 iterations, as in the first release. No schedule depends on the number of iterations, so their times to the target
+compare directly.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="figures/time_to_target_all_dark.png">
@@ -73,14 +78,14 @@ Times are means over runs (range in brackets), in minutes of training with compi
 | method | GPUs | runs | it/s | first ≥ 0.82 (min) | held ×3 (min) | speedup | GPU-min to target |
 |---|---|---|---|---|---|---|---|
 | BlinkMimic | 1 | 5 | 9.1 | 2.25 (1.94–2.51) | 3.19 (2.70–3.91) | 1.00× | 3.2 |
-| InstantTrack v1.3 | 1 | 2 | 10.3 | 2.07 (1.99–2.14) | 3.26 (2.90–3.61) | 0.98× | 3.3 |
-| XMimic, 1 GPU | 1 | 8 | 12.2 | 1.68 (1.39–1.97) | 2.48 (2.11–2.86) | 1.29× | 2.5 |
+| InstantTrack v1.3 | 1 | 2 | 10.2 | 1.90 (1.81–1.99) | 3.31 (2.34–4.29) | 0.96× | 3.3 |
+| XMimic, 1 GPU | 1 | 8 | 12.0 | 1.71 (1.54–1.98) | 2.47 (1.98–3.42) | 1.29× | 2.5 |
 | 1 GPU + probe process (FP1) | 1 | 4 | 11.8 | 1.83 (1.74–1.91) | 2.42 (1.93–3.04) | 1.32× | 2.4 |
 | 2 GPUs: trainer \| prober (FP) | 2 | 4 | 16.0 | 1.59 (1.58–1.60) | 2.10 (1.89–2.32) | 1.52× | 4.2 |
-| 2 GPUs: actor \| learner (AL) | 2 | 2 | 24.7 | 1.04 (1.04–1.04) | 1.63 (1.50–1.76) | 1.96× | 3.3 |
+| 2 GPUs: actor \| learner (AL) | 2 | 4 | 25.2 | 0.93 (0.84–1.03) | 1.39 (1.16–1.81) | 2.29× | 2.8 |
 | 3 GPUs: actor \| learner \| prober (ALP) | 3 | 2 | 25.8 | 0.90 (0.87–0.94) | 1.28 (1.00–1.56) | 2.49× | 3.8 |
-| 3 GPUs: actor \| world model \| policy (AWL) | 3 | 2 | 35.3 | 0.72 (0.72–0.72) | 1.11 (1.05–1.18) | 2.87× | 3.3 |
-| 4 GPUs: actor \| world model \| policy \| prober (AWLP) | 4 | 4 | 38.0 | 0.67 (0.60–0.69) | **0.91 (0.90–0.94)** | **3.50×** | 3.6 |
+| 3 GPUs: actor \| world model \| policy (AWL) | 3 | 4 | 36.4 | 0.71 (0.67–0.72) | 1.09 (0.95–1.41) | 2.91× | 3.3 |
+| 4 GPUs: actor \| world model \| policy \| prober (AWLP) | 4 | 4 | 38.8 | 0.70 (0.69–0.73) | **0.86 (0.77–0.95)** | **3.70×** | 3.4 |
 
 </details>
 
@@ -90,7 +95,9 @@ Times are means over runs (range in brackets), in minutes of training with compi
 <br>
 
 - **Hardware.** One H100 NVL per GPU, the GPUs of a node connected by NVLink. All methods ran on the same cluster.
-- **Training budget.** 3500 iterations and a checkpoint every 100 for every method, as in BlinkMimic.
+- **Training budget.** A checkpoint every 100 iterations for every method, as in BlinkMimic, and at least 6 minutes of
+  training: BlinkMimic trains its 3500 iterations (6.4 minutes), InstantTrack 4000 (6.6 minutes), and XMimic stops after
+  6.2 minutes (`--iterations 100000 --max_minutes 6.2`). FP1, FP and ALP train 3500 iterations.
 - **Evaluation.** BlinkMimic's protocol: each clip is played once from its first frame per replica (4 replicas), with no
   randomization and no noise; a clip fails when the training termination triggers. XMimic's checkpoints are scored by its
   JAX evaluator (`python -m xmimic.evaluate`), BlinkMimic's and InstantTrack's by their own `eval_batch.py`. On the same
@@ -219,14 +226,14 @@ python tools/render_gif.py rollout.npz           # the GIF above
   physics step). In most runs a training world exceeds 256 a few times (about 6 events in 3500 iterations) and loses the
   extra rows for that step. Evaluation uses 500.
 - **Fewer probe sweeps.** In the multi-GPU layouts a sweep runs beside training and spans more iterations than
-  BlinkMimic's in-loop sweep (about 30). A sweep that falls due while one runs is skipped, so per run the 4-GPU layout
-  completes 10 sweeps, AL 9 and AWL 6, against BlinkMimic's 20 (FP, FP1 and ALP: 19–20). It still reaches the target
-  first.
+  BlinkMimic's in-loop sweep (about 30). A sweep that falls due while one runs is skipped, so the 4-GPU layout sweeps
+  once every 250 iterations, AL every 255 and AWL every 380, against every 125 in BlinkMimic (and in FP, FP1 and ALP).
+  It still reaches the target first.
 - **bf16.** The fast learner rounds to bf16 in different places than the reference. Its gradients stay within the
   reference's own bf16 error and the error of torch autocast ([`tests/test_fast_equiv.py`](tests/test_fast_equiv.py)).
-- **Noise.** The held ×3 time of a single run varies by about ±0.4 minutes for every method, because it depends on when
-  the last hard clips stop failing. Compare means. Some layouts have only 2 runs. The 1-GPU XMimic row has 8 runs
-  (seeds 0–6, seed 0 twice). Throughput (it/s) is close to deterministic.
+- **Noise.** The held ×3 time of a single run can lie up to about a minute from the mean of its method, because it
+  depends on when the last hard clips stop failing. Compare means. InstantTrack and ALP have only 2 runs. Throughput
+  (it/s) is close to deterministic.
 - **Hardware.** All numbers are from H100s. The kernel-level gains target Hopper GPUs and may be smaller on others.
 
 ## Repository

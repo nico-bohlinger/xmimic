@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import csv
 import os
+import warnings
 from collections import defaultdict
 
 import matplotlib
@@ -28,20 +29,23 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RESULTS, FIGURES = os.path.join(ROOT, "results"), os.path.join(ROOT, "figures")
 TARGET, HELD, CKPT_EVERY = 0.82, 3, 100
 
-# Colors: the palette of the paper and the release video. XMimic in teal for every GPU count (the labels name the count;
-# XMimic on one GPU is dashed in the learning curves), the baselines in grays with BlinkMimic, the reference, the most
-# prominent. Dark mode lifts the teal and swaps the two grays. The surfaces match GitHub's light and dark page.
+# Colors: the palette of the combined XMimic + XSoma paper. XMimic in teal, one shade per GPU count (light theme: 1 GPU light
+# to 4 GPUs dark; dark theme the other way round, so more GPUs always stand out more), the baselines in grays outside the
+# teal ramp's lightness range with BlinkMimic, the reference, the most prominent, so every gray and teal stay apart under
+# color blindness too. The surfaces match GitHub's light and dark page.
 THEMES = {
     "light": dict(surface="#ffffff", ink="#1d1d1f", ink2="#48484e", muted="#8e8e93", grid="#e5e5ea", axis="#c7c7cc",
-                  ring="#ffffff", xmimic="#00b0be", blinkmimic="#6e6e73", instanttrack="#aeaeb2"),
+                  ring="#ffffff", gpus={1: "#0db3c1", 2: "#009aa8", 3: "#00818f", 4: "#006977"}, blinkmimic="#3d3d40",
+                  instanttrack="#c3c3c8"),
     "dark": dict(surface="#0d1117", ink="#f0f6fc", ink2="#c9d1d9", muted="#8b949e", grid="#21262d", axis="#30363d",
-                 ring="#0d1117", xmimic="#19c3d0", blinkmimic="#aeaeb2", instanttrack="#636366"),
+                 ring="#0d1117", gpus={1: "#008492", 2: "#009aa8", 3: "#00b0be", 4: "#36c6d4"}, blinkmimic="#f1f1f6",
+                 instanttrack="#525256"),
 }
-DASH_1GPU = (0, (4, 2))  # XMimic on one GPU in the learning curves
+GPUS = {"xmimic_1gpu": 1, "xmimic_fp1": 1, "xmimic_fp": 2, "xmimic_al_mps": 2, "xmimic_alp": 3, "xmimic_awl_mps": 3, "xmimic_awlp": 4}
 FONT = ["Helvetica Neue", "Helvetica", "Arial", "DejaVu Sans"]
 
-# the README's main comparison: the baselines, XMimic on one GPU (the like-for-like comparison) and on four (the fastest)
-MAIN = ["blinkmimic", "instanttrack", "xmimic_1gpu", "xmimic_awlp"]
+# the README's main comparison: the baselines and XMimic on one to four GPUs (one GPU is the like-for-like comparison)
+MAIN = ["blinkmimic", "instanttrack", "xmimic_1gpu", "xmimic_al_mps", "xmimic_awl_mps", "xmimic_awlp"]
 ALL = ["blinkmimic", "instanttrack", "xmimic_1gpu", "xmimic_fp1", "xmimic_fp", "xmimic_al_mps", "xmimic_alp",
        "xmimic_awl_mps", "xmimic_awlp"]
 # every layout by the GPUs it uses and its --layout name (README: "Every layout")
@@ -51,7 +55,7 @@ SHORT = {"blinkmimic": "BlinkMimic", "instanttrack": "InstantTrack v1.3", "xmimi
          "xmimic_awl_mps": "3 GPUs: actor | world model | policy (AWL)",
          "xmimic_awlp": "4 GPUs: actor | world model | policy | prober (AWLP)"}
 MAIN_LABEL = {"blinkmimic": "BlinkMimic", "instanttrack": "InstantTrack v1.3", "xmimic_1gpu": "XMimic · 1 GPU",
-              "xmimic_awlp": "XMimic · 4 GPUs"}
+              "xmimic_al_mps": "XMimic · 2 GPUs", "xmimic_awl_mps": "XMimic · 3 GPUs", "xmimic_awlp": "XMimic · 4 GPUs"}
 
 
 # ---------------------------------------------------------------- data
@@ -109,7 +113,7 @@ def setup(theme):
 
 
 def color_of(key, t):
-    return t[key] if key in ("blinkmimic", "instanttrack") else t["xmimic"]
+    return t[key] if key in ("blinkmimic", "instanttrack") else t["gpus"][GPUS[key]]
 
 
 def style_axes(ax, t, grid_axis="x"):
@@ -190,7 +194,7 @@ def curves(res, keys, labels, name, theme):
     fig = plt.figure(figsize=(9.0, 4.2), facecolor=t["surface"])
     axr = fig.add_axes([0.075, 0.14, 0.50, 0.62])
     axf = fig.add_axes([0.665, 0.14, 0.315, 0.62])
-    tmax = max(r[-1][1] for k in keys for r in res[k]["runs"])
+    tmax = float(np.floor(min(r[-1][1] for k in keys for r in res[k]["runs"])))  # whole minutes that every run covers
     grid = np.linspace(0, tmax, 600)
     for k in keys:  # baselines first, XMimic on top
         col = color_of(k, t)
@@ -203,11 +207,11 @@ def curves(res, keys, labels, name, theme):
                 tt, vv = np.array([x[1] for x in r]), np.array([x[j] for x in r])
                 c.append(np.where(g >= tt[0], np.interp(g, tt, vv), np.nan))
             c = np.array(c)
-            with np.errstate(all="ignore"):
+            with np.errstate(all="ignore"), warnings.catch_warnings():
+                warnings.simplefilter("ignore", RuntimeWarning)  # grid points before a method's first evaluation
                 mean, lo, hi = np.nanmean(c, 0), np.nanmin(c, 0), np.nanmax(c, 0)
             ax.fill_between(g, lo, hi, color=col, alpha=0.14, lw=0, zorder=2)
-            ax.plot(g, mean, color=col, lw=2.0, ls=DASH_1GPU if k == "xmimic_1gpu" else "-", solid_capstyle="round",
-                    solid_joinstyle="round", zorder=3,
+            ax.plot(g, mean, color=col, lw=2.0, solid_capstyle="round", solid_joinstyle="round", zorder=3,
                     label=labels[k] if ax is axr else None)
     for ax in (axr, axf):
         style_axes(ax, t, grid_axis="both")
