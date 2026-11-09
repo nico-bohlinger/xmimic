@@ -6,8 +6,8 @@ H100 it is 1.3× faster. Same task, same hyperparameters, same evaluation.
 
 Paper: [XMimic and XSoma: Learning Humanoid Motion Tracking and Locomotion in Under a Minute](https://nico-bohlinger.github.io/papers/2026_xmimic_xsoma.pdf)
 (Nico Bohlinger, Jan Peters, 2026), which presents XMimic together with [XSoma](https://github.com/nico-bohlinger/xsoma), the
-same recipe for locomotion on rough terrain. Please [cite it](#citation) if you use XMimic. The first version
-covered XMimic alone: [XMimic: Learning Whole-Body Motion Tracking in Under a Minute](https://nico-bohlinger.github.io/papers/2026_xmimic.pdf).
+same recipe for locomotion on rough terrain. Please [cite it](#citation) if you use XMimic. It replaces the first version, which covered
+XMimic alone.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="figures/time_to_target_dark.png">
@@ -275,7 +275,7 @@ Licenses and notices of the code XMimic derives from: [THIRD_PARTY_NOTICES.md](T
 If you use XMimic in your research, please cite:
 
 ```bibtex
-@misc{bohlinger2026imagination,
+@misc{bohlinger2026xmimicxsoma,
   title  = {XMimic and XSoma: Learning Humanoid Motion Tracking and Locomotion in Under a Minute},
   author = {Bohlinger, Nico and Peters, Jan},
   year   = {2026},
